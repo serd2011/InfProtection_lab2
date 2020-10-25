@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "EncryptStrategy.h"
+#include "encryption/EncryptStrategy.h"
 
 class App {
 

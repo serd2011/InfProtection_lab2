@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EncryptStrategy.h"
+#include "../EncryptStrategy.h"
 
 namespace ENC {
 
