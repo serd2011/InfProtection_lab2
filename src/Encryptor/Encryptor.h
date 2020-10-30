@@ -4,11 +4,11 @@
 
 #include "encryption/EncryptStrategy.h"
 
-class App {
+class Encryptor {
 
 public:
-	App();
-	~App();
+	Encryptor();
+	~Encryptor();
 
 	void encode(std::string file, std::string pass);
 	void decode(std::string file, std::string pass);
