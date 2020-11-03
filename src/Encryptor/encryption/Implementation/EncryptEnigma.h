@@ -4,7 +4,7 @@
 
 namespace ENC {
 
-	class EncryptEnigma : public EncryptStrategy {
+	class EncryptEnigma : public IEncryptStrategy {
 
 	public:
 		virtual void encrypt(std::istream inputStream, std::ostream outputStream, std::string pass) override;

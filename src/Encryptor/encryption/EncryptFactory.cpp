@@ -1,6 +1,10 @@
 #include "EncryptFactory.h"
 
-ENC::EncryptStrategy* ENC::EncryptFactory::getEncrypt(EncryptTypes type) {
+#include "Implementation/EncryptCaesar.h"
+#include "Implementation/EncryptVigenere.h"
+#include "Implementation/EncryptEnigma.h"
+
+ENC::IEncryptStrategy* ENC::EncryptFactory::getEncrypt(EncryptTypes type) {
 
 		switch (type) {
 

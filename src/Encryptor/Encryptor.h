@@ -4,18 +4,22 @@
 
 #include "encryption/EncryptStrategy.h"
 
-class Encryptor {
+namespace Encryptor {
+	
+	class Encryptor {
 
-public:
-	Encryptor();
-	~Encryptor();
+	public:
+		Encryptor();
+		~Encryptor();
 
-	void encode(std::string file, std::string pass);
-	void decode(std::string file, std::string pass);
+		void encode(std::string file, std::string pass);
+		void decode(std::string file, std::string pass);
 
-	void changeType(ENC::EncryptStrategy& strategy);
+		void changeType(ENC::IEncryptStrategy& strategy);
 
-private:
-	ENC::EncryptStrategy* strategy_;
+	private:
+		ENC::IEncryptStrategy* strategy_;
 
-};
+	};
+
+}

@@ -2,10 +2,6 @@
 
 #include "EncryptStrategy.h"
 
-#include "Implementation/EncryptCaesar.h"
-#include "Implementation/EncryptVigenere.h"
-#include "Implementation/EncryptEnigma.h"
-
 namespace ENC {
 
 	enum class EncryptTypes {
@@ -17,7 +13,7 @@ namespace ENC {
 	class EncryptFactory {
 
 	public:
-		EncryptStrategy* getEncrypt(EncryptTypes type);
+		IEncryptStrategy* getEncrypt(EncryptTypes type);
 
 	};
 
