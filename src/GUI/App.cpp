@@ -6,7 +6,7 @@ wxIMPLEMENT_APP(App);
 bool App::OnInit() {
 	if (!wxApp::OnInit())
 		return false;
-	MainFrame* frame = new MainFrame(NULL, wxID_ANY, "Øèôðàòîð");
+	MainFrame* frame = new MainFrame(NULL, wxID_ANY, L"Ð¨Ð¸Ñ„Ñ€Ð°Ñ‚Ð¾Ñ€");
 	frame->Show(true);
 	return true;
 }

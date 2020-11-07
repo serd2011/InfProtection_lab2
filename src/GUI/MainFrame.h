@@ -6,7 +6,7 @@
 #include "wx/wx.h"
 #endif
 
-#include <wx/filepicker.h>
+#include "wx/filepicker.h"
 
 class MainFrame : public wxFrame {
 
@@ -21,23 +21,23 @@ public:
 	);
 
 	// Menu Commands
-	void OnQuit(wxCommandEvent& event);
-	void OnAbout(wxCommandEvent& event);
+	void onQuit(wxCommandEvent& event);
+	void onAbout(wxCommandEvent& event);
 
-	// UI Update Hadlers
-	void InputFilePicker_OnFileChanged(wxFileDirPickerEvent& event);
-	void OutputFilePicker_OnFileChanged(wxFileDirPickerEvent& event);
-	void EncryptionType_OnRadioBox(wxCommandEvent& event);
-	void StartButton_OnButtonClick(wxCommandEvent& event);
+	// UI Update Handlers
+	void inputFilePicker_onFileChanged(wxFileDirPickerEvent& event);
+	void outputFilePicker_onFileChanged(wxFileDirPickerEvent& event);
+	void encryptionType_onRadioBox(wxCommandEvent& event);
+	void startButton_onButtonClick(wxCommandEvent& event);
 
 private:
-	wxStaticText* InputFileStaticText;
-	wxFilePickerCtrl* InputFilePicker;
-	wxStaticText* OutputFileStaticText;
-	wxFilePickerCtrl* OutputFilePicker;
-	wxRadioBox* EncryptionType;
-	wxStaticText* m_staticText3;
-	wxTextCtrl* Password;
-	wxButton* StartButton;
-	wxStatusBar* StatusBar;
+	wxStaticText* inputFileStaticText;
+	wxFilePickerCtrl* inputFilePicker;
+	wxStaticText* outputFileStaticText;
+	wxFilePickerCtrl* outputFilePicker;
+	wxRadioBox* encryptionType;
+	wxStaticText* passwordInputStaticText;
+	wxTextCtrl* passwordInputField;
+	wxButton* startButton;
+	wxStatusBar* statusBar;
 };

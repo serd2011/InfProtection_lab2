@@ -31,3 +31,6 @@ project "EncryptorApp"
 
     filter "configurations:Release"
         optimize "On"
+
+    filter "action:vs*"
+        buildoptions {"/utf-8"}
