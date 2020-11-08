@@ -8,6 +8,8 @@
 
 #include "wx/filepicker.h"
 
+#include "StatusBar.h"
+
 class MainFrame : public wxFrame {
 
 public:
@@ -26,9 +28,10 @@ public:
 
 	// UI Update Handlers
 	void inputFilePicker_onFileChanged(wxFileDirPickerEvent& event);
+	void inputFilePicker_onDropFiles(wxDropFilesEvent& event);
 	void outputFilePicker_onFileChanged(wxFileDirPickerEvent& event);
-	void encryptionType_onRadioBox(wxCommandEvent& event);
-	void startButton_onButtonClick(wxCommandEvent& event);
+	void encryptionType_onChange(wxCommandEvent& event);
+	void startButton_onClick(wxCommandEvent& event);
 
 private:
 	wxStaticText* inputFileStaticText;
@@ -39,5 +42,5 @@ private:
 	wxStaticText* passwordInputStaticText;
 	wxTextCtrl* passwordInputField;
 	wxButton* startButton;
-	wxStatusBar* statusBar;
+	StatusBar* statusBar;
 };

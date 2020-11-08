@@ -1,9 +1,11 @@
 #include "MainFrame.h"
 
+#include "wx/filefn.h" 
+
 namespace Commands {
 	enum {
 		Quit = wxID_EXIT,
-		About  = wxID_ABOUT
+		About = wxID_ABOUT
 	};
 }
 
@@ -18,7 +20,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	helpMenu->Append(m_menuItem);
 
 	wxMenuBar* menuBar = new wxMenuBar();
-	menuBar->Append(fileMenu, L"Файл"); 
+	menuBar->Append(fileMenu, L"Файл");
 	menuBar->Append(helpMenu, L"Справка");
 
 	SetMenuBar(menuBar);
@@ -37,27 +39,28 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	FilePickersSizer->SetFlexibleDirection(wxHORIZONTAL);
 	FilePickersSizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_SPECIFIED);
 
-	inputFileStaticText = new wxStaticText(this, wxID_ANY, L"Входной файл", wxDefaultPosition, wxDefaultSize, 0);
+	this->inputFileStaticText = new wxStaticText(this, wxID_ANY, L"Входной файл", wxDefaultPosition, wxDefaultSize, 0);
 	FilePickersSizer->Add(inputFileStaticText, 0, wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxRIGHT, 5);
 
-	inputFilePicker = new wxFilePickerCtrl(this, wxID_ANY, wxEmptyString, L"Выберите файл", L"*.*", wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE | wxFLP_FILE_MUST_EXIST | wxFLP_SMALL);
-	inputFilePicker->SetMinSize(wxSize(300, -1));
-	FilePickersSizer->Add(inputFilePicker, 0, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxLEFT, 5);
+	this->inputFilePicker = new wxFilePickerCtrl(this, wxID_ANY, wxEmptyString, L"Выберите файл", L"*.*", wxDefaultPosition, wxDefaultSize, wxFLP_OPEN | wxFLP_SMALL | wxFLP_USE_TEXTCTRL | wxFLP_CHANGE_DIR | wxFLP_FILE_MUST_EXIST);
+	this->inputFilePicker->SetMinSize(wxSize(300, -1));
+	this->inputFilePicker->DragAcceptFiles(true);
+	FilePickersSizer->Add(this->inputFilePicker, 0, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxLEFT, 5);
 
-	outputFileStaticText = new wxStaticText(this, wxID_ANY, L"Выходной файл", wxDefaultPosition, wxDefaultSize, 0);
-	FilePickersSizer->Add(outputFileStaticText, 0, wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxRIGHT, 5);
+	this->outputFileStaticText = new wxStaticText(this, wxID_ANY, L"Выходной файл", wxDefaultPosition, wxDefaultSize, 0);
+	FilePickersSizer->Add(this->outputFileStaticText, 0, wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxRIGHT, 5);
 
-	outputFilePicker = new wxFilePickerCtrl(this, wxID_ANY, wxEmptyString, L"Выберите файл", L"*.*", wxDefaultPosition, wxDefaultSize, wxFLP_SAVE | wxFLP_SMALL | wxFLP_USE_TEXTCTRL);
-	inputFilePicker->SetMinSize(wxSize(300, -1));
-	FilePickersSizer->Add(outputFilePicker, 0, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxLEFT, 5);
+	this->outputFilePicker = new wxFilePickerCtrl(this, wxID_ANY, wxEmptyString, L"Выберите файл", L"*.enc", wxDefaultPosition, wxDefaultSize, wxFLP_SAVE | wxFLP_SMALL | wxFLP_USE_TEXTCTRL | wxFLP_CHANGE_DIR | wxFLP_OVERWRITE_PROMPT);
+	this->inputFilePicker->SetMinSize(wxSize(300, -1));
+	FilePickersSizer->Add(this->outputFilePicker, 0, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxLEFT, 5);
 
 	MainSizer->Add(FilePickersSizer, 0, wxEXPAND | wxALL, 10);
 
 	wxString EncryptionTypeChoices[] = { L"Цезарь", L"Виженер", L"Энигма" };
 	int EncryptionTypeNChoices = sizeof(EncryptionTypeChoices) / sizeof(wxString);
-	encryptionType = new wxRadioBox(this, wxID_ANY, L"Тип шифрования", wxDefaultPosition, wxDefaultSize, EncryptionTypeNChoices, EncryptionTypeChoices, 1, wxRA_SPECIFY_ROWS);
-	encryptionType->SetSelection(0);
-	MainSizer->Add(encryptionType, 0, wxALIGN_CENTER_HORIZONTAL | wxBOTTOM | wxRIGHT | wxLEFT, 10);
+	this->encryptionType = new wxRadioBox(this, wxID_ANY, L"Тип шифрования", wxDefaultPosition, wxDefaultSize, EncryptionTypeNChoices, EncryptionTypeChoices, 1, wxRA_SPECIFY_ROWS);
+	this->encryptionType->SetSelection(0);
+	MainSizer->Add(this->encryptionType, 0, wxALIGN_CENTER_HORIZONTAL | wxBOTTOM | wxRIGHT | wxLEFT, 10);
 
 	wxFlexGridSizer* fgSizer2;
 	fgSizer2 = new wxFlexGridSizer(1, 2, 0, 0);
@@ -65,20 +68,20 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	fgSizer2->SetFlexibleDirection(wxHORIZONTAL);
 	fgSizer2->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_SPECIFIED);
 
-	passwordInputStaticText = new wxStaticText(this, wxID_ANY, L"Пароль", wxDefaultPosition, wxDefaultSize, 0);
-	passwordInputStaticText->Wrap(-1);
-	fgSizer2->Add(passwordInputStaticText, 0, wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxRIGHT, 5);
+	this->passwordInputStaticText = new wxStaticText(this, wxID_ANY, L"Пароль", wxDefaultPosition, wxDefaultSize, 0);
+	this->passwordInputStaticText->Wrap(-1);
+	fgSizer2->Add(this->passwordInputStaticText, 0, wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxRIGHT, 5);
 
-	passwordInputField = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
-	fgSizer2->Add(passwordInputField, 0, wxALIGN_CENTER_VERTICAL | wxEXPAND | wxTOP | wxBOTTOM | wxLEFT, 5);
+	this->passwordInputField = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
+	fgSizer2->Add(this->passwordInputField, 0, wxALIGN_CENTER_VERTICAL | wxEXPAND | wxTOP | wxBOTTOM | wxLEFT, 5);
 
 	MainSizer->Add(fgSizer2, 0, wxEXPAND | wxBOTTOM | wxRIGHT | wxLEFT, 10);
 
-	startButton = new wxButton(this, wxID_ANY, L"Шифровать", wxDefaultPosition, wxSize(-1, 36), 0);
-	MainSizer->Add(startButton, 0, wxEXPAND | wxBOTTOM | wxRIGHT | wxLEFT, 10);
+	this->startButton = new wxButton(this, wxID_ANY, L"Шифровать", wxDefaultPosition, wxSize(-1, 36), 0);
+	MainSizer->Add(this->startButton, 0, wxEXPAND | wxBOTTOM | wxRIGHT | wxLEFT, 10);
 
-	statusBar = this->CreateStatusBar(1, wxSTB_SIZEGRIP, wxID_ANY);
-	SetStatusText(wxT("Ready"), 0);
+	this->statusBar = new StatusBar(this, wxID_ANY);
+	this->SetStatusBar(this->statusBar);
 
 	this->SetSizerAndFit(MainSizer);
 
@@ -87,10 +90,11 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	this->Centre(wxBOTH);
 
 	// Connect Events
-	inputFilePicker->Connect(wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler(MainFrame::inputFilePicker_onFileChanged), NULL, this);
-	outputFilePicker->Connect(wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler(MainFrame::outputFilePicker_onFileChanged), NULL, this);
-	encryptionType->Connect(wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler(MainFrame::encryptionType_onRadioBox), NULL, this);
-	startButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrame::startButton_onButtonClick), NULL, this);
+	this->inputFilePicker->Bind(wxEVT_FILEPICKER_CHANGED, &MainFrame::inputFilePicker_onFileChanged, this);
+	this->inputFilePicker->Bind(wxEVT_DROP_FILES, &MainFrame::inputFilePicker_onDropFiles, this);
+	this->outputFilePicker->Bind(wxEVT_FILEPICKER_CHANGED, &MainFrame::outputFilePicker_onFileChanged, this);
+	this->encryptionType->Bind(wxEVT_RADIOBOX, &MainFrame::encryptionType_onChange, this);
+	this->startButton->Bind(wxEVT_BUTTON, &MainFrame::startButton_onClick, this);
 }
 
 
@@ -113,14 +117,28 @@ void MainFrame::inputFilePicker_onFileChanged(wxFileDirPickerEvent& event) {
 	event.Skip();
 }
 
+void MainFrame::inputFilePicker_onDropFiles(wxDropFilesEvent& event) {
+	if (event.GetNumberOfFiles() > 0) {
+		wxString* dropped = event.GetFiles();
+		if (wxDirExists(dropped[0])) {
+			this->inputFilePicker->SetPath(L"");
+		} else {
+			this->inputFilePicker->SetPath(dropped[0]);
+		}
+	} else {
+		this->inputFilePicker->SetPath(L"");
+	}
+	event.Skip();
+}
+
 void MainFrame::outputFilePicker_onFileChanged(wxFileDirPickerEvent& event) {
 	event.Skip();
 }
 
-void MainFrame::encryptionType_onRadioBox(wxCommandEvent& event) {
+void MainFrame::encryptionType_onChange(wxCommandEvent& event) {
 	event.Skip();
 }
 
-void MainFrame::startButton_onButtonClick(wxCommandEvent& event) {
+void MainFrame::startButton_onClick(wxCommandEvent& event) {
 	event.Skip();
 }
