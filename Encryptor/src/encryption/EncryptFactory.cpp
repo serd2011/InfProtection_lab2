@@ -1,8 +1,8 @@
-#include "EncryptFactory.h"
+#include "encryption/EncryptFactory.h"
 
-#include "Implementation/EncryptCaesar.h"
-#include "Implementation/EncryptVigenere.h"
-#include "Implementation/EncryptEnigma.h"
+#include "encryption/Implementation/EncryptCaesar.h"
+#include "encryption/Implementation/EncryptVigenere.h"
+#include "encryption/Implementation/EncryptEnigma.h"
 
 ENC::IEncryptStrategy* ENC::EncryptFactory::getEncrypt(EncryptTypes type) {
 

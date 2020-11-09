@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 
-#include "Encryptor/encryption/EncryptFactory.h"
+#include "encryption/EncryptFactory.h"
 
 namespace Utils {
 

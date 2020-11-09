@@ -1,4 +1,4 @@
-#include "EncryptCaesar.h"
+#include "encryption/Implementation/EncryptCaesar.h"
 
 void ENC::EncryptCaesar::encrypt(std::istream inputStream, std::ostream outputStream, std::string pass) {
 	throw std::logic_error("Not Implemented");

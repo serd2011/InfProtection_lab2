@@ -1,12 +1,6 @@
 #pragma once
 
-#include "wx/wxprec.h"
-
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-
-#include "wx/filepicker.h"
+#include "pch.h"
 
 #include "StatusBar.h"
 

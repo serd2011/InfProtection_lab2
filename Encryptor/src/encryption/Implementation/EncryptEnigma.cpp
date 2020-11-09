@@ -1,4 +1,4 @@
-#include "EncryptEnigma.h"
+#include "encryption/Implementation/EncryptEnigma.h"
 
 void ENC::EncryptEnigma::encrypt(std::istream inputStream, std::ostream outputStream, std::string pass) {
 	throw std::logic_error("Not Implemented");

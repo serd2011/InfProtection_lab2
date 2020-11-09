@@ -1,12 +1,8 @@
 #pragma once
 
-#include "wx/wxprec.h"
+#include "pch.h"
 
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-
-#include "Encryptor/Encryptor.h"
+#include "Encryptor.h"
 #include "Utils/EncriptionContainer.h"
 
 

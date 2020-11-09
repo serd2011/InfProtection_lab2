@@ -1,6 +1,6 @@
-#include "StatusBar.h"
+#include "pch.h"
 
-#include "wx/sizer.h"
+#include "StatusBar.h"
 
 StatusBar::StatusBar(wxWindow* parent, wxWindowID id) : wxStatusBar(parent, id, wxSTB_SIZEGRIP) {
 
@@ -9,7 +9,7 @@ StatusBar::StatusBar(wxWindow* parent, wxWindowID id) : wxStatusBar(parent, id, 
 	fgSizer->AddGrowableRow(0);
 	fgSizer->SetFlexibleDirection(wxBOTH);
 	fgSizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_SPECIFIED);
-
+	
 	this->statusStaticText = new wxStaticText(this, wxID_ANY, wxEmptyString);
 	fgSizer->Add(this->statusStaticText, 0, wxALIGN_CENTER_VERTICAL | wxRESERVE_SPACE_EVEN_IF_HIDDEN | wxLEFT, 10);
 
@@ -28,12 +28,16 @@ void StatusBar::hideProgress() {
 	this->progressBar->Hide();
 }
 
-void StatusBar::showProgress(int range) {
+void StatusBar::showProgress(unsigned int range) {
 	this->progressBar->SetRange(range);
 	this->progressBar->SetValue(0);
 	this->progressBar->Show();
 }
 
-void StatusBar::setProgress(int value) {
+void StatusBar::setProgress(unsigned int value) {
 	this->progressBar->SetValue(value);
+}
+
+unsigned int StatusBar::getProgress() {
+	return this->progressBar->GetValue();
 }

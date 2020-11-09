@@ -1,4 +1,4 @@
-#include "EncryptVigenere.h"
+#include "encryption/Implementation/EncryptVigenere.h"
 
 void ENC::EncryptVigenere::encrypt(std::istream inputStream, std::ostream outputStream, std::string pass) {
 	throw std::logic_error("Not Implemented");

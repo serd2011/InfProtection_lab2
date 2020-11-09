@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "App.h"
 #include "MainFrame.h"
 

@@ -1,6 +1,6 @@
-#include "MainFrame.h"
+#include "pch.h"
 
-#include "wx/filefn.h" 
+#include "MainFrame.h"
 
 namespace Commands {
 	enum {
@@ -8,9 +8,9 @@ namespace Commands {
 		About = wxID_ABOUT
 	};
 }
-
+         
 MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
-
+	
 	wxMenu* fileMenu = new wxMenu;
 	auto m_menuItem = new wxMenuItem(fileMenu, Commands::Quit, wxString(L"Выход\tAlt+F4"), wxEmptyString, wxITEM_NORMAL);
 	fileMenu->Append(m_menuItem);
@@ -96,7 +96,6 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	this->encryptionType->Bind(wxEVT_RADIOBOX, &MainFrame::encryptionType_onChange, this);
 	this->startButton->Bind(wxEVT_BUTTON, &MainFrame::startButton_onClick, this);
 }
-
 
 // event handlers
 

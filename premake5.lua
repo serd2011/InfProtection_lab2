@@ -1,4 +1,4 @@
-workspace "EncryptorApp"
+workspace "Kursach"
     configurations { 
         "Debug",
         "Release"
@@ -7,30 +7,13 @@ workspace "EncryptorApp"
 
     platforms { "x86", "x86_64" }
 
+    startproject "EncryptorApp"
+
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-project "EncryptorApp"
-    kind "WindowedApp"
-    language "C++"
-    characterset ("Unicode")
+IncludeDir = {}
+IncludeDir["Encryptor"] = "%{wks.location}/Encryptor/include" 
 
-    targetdir ("build/bin/" .. outputdir)
-    objdir ("build/obj/" .. outputdir)
+include "Encryptor/"
+include "EncryptorApp/"
 
-    files { 
-        "src/**.h",
-        "src/**.cpp"
-    }
-
-    includedirs {
-        "src/"        
-    }
-
-    filter "configurations:Debug"
-        symbols "On"
-
-    filter "configurations:Release"
-        optimize "On"
-
-    filter "action:vs*"
-        buildoptions {"/utf-8"}

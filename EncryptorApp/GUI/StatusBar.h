@@ -1,8 +1,6 @@
 #pragma once
 
-#include "wx/statusbr.h"
-#include "wx/gauge.h"
-#include "wx/stattext.h"
+#include "pch.h"
 
 class StatusBar : public wxStatusBar {
 
@@ -12,8 +10,10 @@ public:
 	void setStatus(const wxString& status);
 
 	void hideProgress();
-	void showProgress(int range);
-	void setProgress(int value);
+	void showProgress(unsigned int range);
+
+	void setProgress(unsigned int value);
+	unsigned int getProgress();
 
 private:
 	wxGauge* progressBar;
