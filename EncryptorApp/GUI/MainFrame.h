@@ -17,15 +17,18 @@ public:
 	);
 
 	// Menu Commands
-	void onQuit(wxCommandEvent& event);
-	void onAbout(wxCommandEvent& event);
+	void onQuit(wxCommandEvent&);
+	void onAbout(wxCommandEvent&);
 
 	// UI Update Handlers
-	void inputFilePicker_onFileChanged(wxFileDirPickerEvent& event);
-	void inputFilePicker_onDropFiles(wxDropFilesEvent& event);
-	void outputFilePicker_onFileChanged(wxFileDirPickerEvent& event);
-	void encryptionType_onChange(wxCommandEvent& event);
+	void inputFilePicker_onDropFiles(wxDropFilesEvent&);
 	void startButton_onClick(wxCommandEvent& event);
+	void cancelButton_onClick(wxCommandEvent& event);
+
+	// Frame Update Handlers
+	void standByState();
+	void startState();
+	void updateProgress(unsigned int progress);
 
 private:
 	wxStaticText* inputFileStaticText;
@@ -36,5 +39,6 @@ private:
 	wxStaticText* passwordInputStaticText;
 	wxTextCtrl* passwordInputField;
 	wxButton* startButton;
+	wxButton* cancelButton;
 	StatusBar* statusBar;
 };

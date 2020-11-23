@@ -22,7 +22,12 @@
 #include "wx/filefn.h"
 #include "wx/gauge.h"
 #include "wx/msgdlg.h"
+#include "wx/timer.h"
+#include "wx/event.h"
 
+#ifdef __WXMSW__ 
+#include "wx/taskbarbutton.h"
+#endif
 
 #ifdef __COMPILER_VISUAL_C__
 

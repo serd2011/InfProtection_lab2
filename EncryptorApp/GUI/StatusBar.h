@@ -5,8 +5,9 @@
 class StatusBar : public wxStatusBar {
 
 public:
-	StatusBar(wxWindow* parent, wxWindowID id);
+	StatusBar(wxFrame* parent, wxWindowID id);
 	
+	void clearStatus();
 	void setStatus(const wxString& status);
 
 	void hideProgress();
@@ -18,6 +19,10 @@ public:
 private:
 	wxGauge* progressBar;
 	wxStaticText* statusStaticText;
+
+#ifdef __WXMSW__ 
+	wxTaskBarButton* taskBarPtr;
+#endif
 
 };
 

@@ -5,7 +5,11 @@ Utils::EncryptionContainer::EncryptionContainer() {
     factory_ = ENC::EncryptFactory();
 }
 
-Utils::EncryptionContainer::~EncryptionContainer() {}
+Utils::EncryptionContainer::~EncryptionContainer() {
+    for (auto it = instances_.begin(); it != instances_.end(); it++) {
+        delete it->second;
+    }
+}
 
 ENC::IEncryptStrategy& Utils::EncryptionContainer::getStrategy(ENC::EncryptTypes type) {
 

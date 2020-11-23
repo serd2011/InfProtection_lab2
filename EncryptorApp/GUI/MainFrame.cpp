@@ -2,15 +2,17 @@
 
 #include "MainFrame.h"
 
+#include "EncryptEvent.h"
+
 namespace Commands {
 	enum {
 		Quit = wxID_EXIT,
 		About = wxID_ABOUT
 	};
 }
-         
+
 MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
-	
+
 	wxMenu* fileMenu = new wxMenu;
 	auto m_menuItem = new wxMenuItem(fileMenu, Commands::Quit, wxString(L"Выход\tAlt+F4"), wxEmptyString, wxITEM_NORMAL);
 	fileMenu->Append(m_menuItem);
@@ -80,6 +82,10 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	this->startButton = new wxButton(this, wxID_ANY, L"Шифровать", wxDefaultPosition, wxSize(-1, 36), 0);
 	MainSizer->Add(this->startButton, 0, wxEXPAND | wxBOTTOM | wxRIGHT | wxLEFT, 10);
 
+	this->cancelButton = new wxButton(this, wxID_ANY, L"Отмена", wxDefaultPosition, wxSize(-1, 36), 0);
+	MainSizer->Add(this->cancelButton, 0, wxEXPAND | wxBOTTOM | wxRIGHT | wxLEFT, 10);
+	this->cancelButton->Hide();
+
 	this->statusBar = new StatusBar(this, wxID_ANY);
 	this->SetStatusBar(this->statusBar);
 
@@ -90,11 +96,9 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	this->Centre(wxBOTH);
 
 	// Connect Events
-	this->inputFilePicker->Bind(wxEVT_FILEPICKER_CHANGED, &MainFrame::inputFilePicker_onFileChanged, this);
 	this->inputFilePicker->Bind(wxEVT_DROP_FILES, &MainFrame::inputFilePicker_onDropFiles, this);
-	this->outputFilePicker->Bind(wxEVT_FILEPICKER_CHANGED, &MainFrame::outputFilePicker_onFileChanged, this);
-	this->encryptionType->Bind(wxEVT_RADIOBOX, &MainFrame::encryptionType_onChange, this);
 	this->startButton->Bind(wxEVT_BUTTON, &MainFrame::startButton_onClick, this);
+	this->cancelButton->Bind(wxEVT_BUTTON, &MainFrame::cancelButton_onClick, this);
 }
 
 // event handlers
@@ -112,10 +116,6 @@ void MainFrame::onAbout(wxCommandEvent& WXUNUSED(event)) {
 	);
 }
 
-void MainFrame::inputFilePicker_onFileChanged(wxFileDirPickerEvent& event) {
-	event.Skip();
-}
-
 void MainFrame::inputFilePicker_onDropFiles(wxDropFilesEvent& event) {
 	if (event.GetNumberOfFiles() > 0) {
 		wxString* dropped = event.GetFiles();
@@ -130,14 +130,43 @@ void MainFrame::inputFilePicker_onDropFiles(wxDropFilesEvent& event) {
 	event.Skip();
 }
 
-void MainFrame::outputFilePicker_onFileChanged(wxFileDirPickerEvent& event) {
-	event.Skip();
-}
-
-void MainFrame::encryptionType_onChange(wxCommandEvent& event) {
-	event.Skip();
-}
-
 void MainFrame::startButton_onClick(wxCommandEvent& event) {
-	event.Skip();
+	std::string inputFile = this->inputFilePicker->GetPath();
+	std::string outputFile = this->outputFilePicker->GetPath();
+	std::string pass = this->passwordInputField->GetLineText(0);
+	size_t type = this->encryptionType->GetSelection();
+	StartEncryptEvent encryptEvent(inputFile, outputFile, pass, type);
+	wxPostEvent(this, encryptEvent);
+}
+
+void MainFrame::cancelButton_onClick(wxCommandEvent& event) {
+	wxPostEvent(this, CancelEncryptEvent());
+}
+
+void MainFrame::standByState() {
+	this->cancelButton->Hide();
+	this->startButton->Show();
+	this->inputFilePicker->Enable(true);
+	this->outputFilePicker->Enable(true);
+	this->encryptionType->Enable(true);
+	this->passwordInputField->Enable(true);
+	this->statusBar->clearStatus();
+	this->statusBar->hideProgress();
+	this->Layout();
+}
+
+void MainFrame::startState() {
+	this->cancelButton->Show();
+	this->startButton->Hide();
+	this->inputFilePicker->Enable(false);
+	this->outputFilePicker->Enable(false);
+	this->encryptionType->Enable(false);
+	this->passwordInputField->Enable(false);
+	this->statusBar->setStatus(L"Шифрование...");
+	this->statusBar->showProgress(100);
+	this->Layout();
+}
+
+void MainFrame::updateProgress(unsigned int progress) {
+	this->statusBar->setProgress(progress);
 }

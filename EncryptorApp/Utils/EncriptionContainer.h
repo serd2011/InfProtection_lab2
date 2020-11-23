@@ -18,11 +18,12 @@ namespace Utils {
         ENC::IEncryptStrategy& getStrategy(ENC::EncryptTypes type);
 
     private:
-        EncryptionContainer(const EncryptionContainer&);
-        EncryptionContainer& operator=(const EncryptionContainer&);
+        EncryptionContainer(const EncryptionContainer&) = delete;
+        EncryptionContainer& operator=(const EncryptionContainer&) = delete;
 
         std::map<ENC::EncryptTypes, ENC::IEncryptStrategy*> instances_;
 
         ENC::EncryptFactory factory_;
     };
+
 }
