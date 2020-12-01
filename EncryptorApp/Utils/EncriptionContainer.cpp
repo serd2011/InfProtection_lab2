@@ -11,7 +11,7 @@ Utils::EncryptionContainer::~EncryptionContainer() {
     }
 }
 
-ENC::IEncryptStrategy& Utils::EncryptionContainer::getStrategy(ENC::EncryptTypes type) {
+ENC::IEncryptStrategy& Utils::EncryptionContainer::getEncryption(ENC::EncryptTypes type) {
 
     auto it = instances_.find(type);
 

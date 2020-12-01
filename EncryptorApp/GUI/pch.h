@@ -25,8 +25,9 @@
 #include "wx/timer.h"
 #include "wx/event.h"
 
-#ifdef __WXMSW__ 
-#include "wx/taskbarbutton.h"
+#if defined(__WXMSW__) || defined(__WXOSX_COCOA__)
+#define __APP_PROGRESS_AVAILABLE__
+#include "wx/appprogress.h"
 #endif
 
 #ifdef __COMPILER_VISUAL_C__

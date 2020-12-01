@@ -4,6 +4,8 @@
 
 StatusBar::StatusBar(wxFrame* parent, wxWindowID id) : wxStatusBar(parent, id, wxSTB_SIZEGRIP) {
 
+	parent->SetStatusBarPane(-1);
+
 	wxFlexGridSizer* fgSizer = new wxFlexGridSizer(1, 2, 10, 0);
 	fgSizer->AddGrowableCol(0);
 	fgSizer->AddGrowableRow(0);
@@ -13,18 +15,24 @@ StatusBar::StatusBar(wxFrame* parent, wxWindowID id) : wxStatusBar(parent, id, w
 	this->statusStaticText = new wxStaticText(this, wxID_ANY, wxEmptyString);
 	fgSizer->Add(this->statusStaticText, 0, wxALIGN_CENTER_VERTICAL | wxRESERVE_SPACE_EVEN_IF_HIDDEN | wxLEFT, 10);
 
-	this->progressBar = new wxGauge(this, wxID_ANY, 200, wxDefaultPosition, wxSize(150, -1));
+	this->progressBar = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, wxSize(150, -1));
 	progressBar->Hide();
 	fgSizer->Add(this->progressBar, 0, wxALIGN_CENTER_VERTICAL | wxRESERVE_SPACE_EVEN_IF_HIDDEN | wxRIGHT | wxALIGN_RIGHT, 20);
 
 	this->SetSizer(fgSizer);
 
-#ifdef __WXMSW__ 
-	this->taskBarPtr = parent->MSWGetTaskBarButton();
+#ifdef __APP_PROGRESS_AVAILABLE__ 
+	this->appProgress = new wxAppProgressIndicator();
 #endif
 }
 
-void StatusBar::clearStatus() {
+StatusBar::~StatusBar() {
+#ifdef __APP_PROGRESS_AVAILABLE__ 
+	delete this->appProgress;
+#endif
+}
+
+void StatusBar::clearStatus() {	
 	this->statusStaticText->SetLabel("");
 }
 
@@ -34,6 +42,10 @@ void StatusBar::setStatus(const wxString& status) {
 
 void StatusBar::hideProgress() {
 	this->progressBar->Hide();
+
+#ifdef __APP_PROGRESS_AVAILABLE__ 
+	this->appProgress->SetValue(0);
+#endif
 }
 
 void StatusBar::showProgress(unsigned int range) {
@@ -41,17 +53,17 @@ void StatusBar::showProgress(unsigned int range) {
 	this->progressBar->SetValue(0);
 	this->progressBar->Show();
 
-#ifdef __WXMSW__ 
-	this->taskBarPtr->SetProgressRange(range);
-	this->taskBarPtr->SetProgressValue(0);
+#ifdef __APP_PROGRESS_AVAILABLE__ 
+	this->appProgress->SetRange(range);
+	this->appProgress->SetValue(0);
 #endif
 }
 
 void StatusBar::setProgress(unsigned int value) {
 	this->progressBar->SetValue(value);
 
-#ifdef __WXMSW__ 
-	this->taskBarPtr->SetProgressValue(value);
+#ifdef __APP_PROGRESS_AVAILABLE__ 
+	this->appProgress->SetValue(value);
 #endif
 }
 

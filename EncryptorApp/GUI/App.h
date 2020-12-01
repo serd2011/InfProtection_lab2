@@ -1,32 +1,41 @@
 #pragma once
-
 #include "pch.h"
 
+// Encryptor
 #include "Encryptor.h"
-#include "Utils/EncriptionContainer.h"
-
-#include "EncryptEvent.h"
+// GUI
 #include "MainFrame.h"
-
+#include "EncryptEvent.h"
+#include "defines.h"
+// STD
 #include <thread>
-
-using EncryptTypes = Utils::EncryptTypes;
+#include <future>
 
 class App : public wxApp {
 
 public:
+
+	~App();
+
 	virtual bool OnInit() override;
 	virtual int OnExit() override;
 
-	virtual void OnUnhandledException() override;
+	virtual bool OnExceptionInMainLoop() override;
 
 	void OnEncryptStart(StartEncryptEvent&);
 	void OnEncryptCancel(CancelEncryptEvent&);
 
+	void OnTimer(wxTimerEvent&);
+
 private:
 	MainFrame* mainFrame = nullptr;
 
-	std::thread* encryptionThread = nullptr;
+	wxTimer* timer = nullptr;
+
+	std::future<void> future_;
+
 	Encryptor::Encryptor encryptor;
 	Utils::EncryptionContainer encryptions;
+
+	States state = States::standBy;
 };

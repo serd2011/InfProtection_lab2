@@ -1,12 +1,12 @@
 #pragma once
-
 #include "pch.h"
 
 class StatusBar : public wxStatusBar {
 
 public:
 	StatusBar(wxFrame* parent, wxWindowID id);
-	
+	~StatusBar();
+
 	void clearStatus();
 	void setStatus(const wxString& status);
 
@@ -20,8 +20,8 @@ private:
 	wxGauge* progressBar;
 	wxStaticText* statusStaticText;
 
-#ifdef __WXMSW__ 
-	wxTaskBarButton* taskBarPtr;
+#ifdef __APP_PROGRESS_AVAILABLE__
+	wxAppProgressIndicator* appProgress;
 #endif
 
 };

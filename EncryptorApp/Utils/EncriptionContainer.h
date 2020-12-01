@@ -15,7 +15,7 @@ namespace Utils {
         EncryptionContainer();
         ~EncryptionContainer();
 
-        ENC::IEncryptStrategy& getStrategy(ENC::EncryptTypes type);
+        ENC::IEncryptStrategy& getEncryption(ENC::EncryptTypes type);
 
     private:
         EncryptionContainer(const EncryptionContainer&) = delete;

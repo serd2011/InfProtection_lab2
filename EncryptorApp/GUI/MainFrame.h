@@ -1,8 +1,8 @@
 #pragma once
-
 #include "pch.h"
 
 #include "StatusBar.h"
+#include "defines.h"
 
 class MainFrame : public wxFrame {
 
@@ -26,8 +26,7 @@ public:
 	void cancelButton_onClick(wxCommandEvent& event);
 
 	// Frame Update Handlers
-	void standByState();
-	void startState();
+	void setState(States state);
 	void updateProgress(unsigned int progress);
 
 private:

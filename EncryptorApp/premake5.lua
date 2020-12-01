@@ -21,7 +21,7 @@ project "EncryptorApp"
     pchheader "pch.h"
     pchsource "GUI/pch.cpp"
 
-    filter "files:Utils/**.*"
+    filter "files:not GUI/**.*"
         flags { 'NoPCH' }        
     
     filter "configurations:Debug"
