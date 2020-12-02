@@ -8,7 +8,6 @@
 #include "EncryptEvent.h"
 #include "defines.h"
 // STD
-#include <thread>
 #include <future>
 
 class App : public wxApp {

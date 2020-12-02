@@ -7,7 +7,10 @@
 enum class States {
 	standBy,
 	encrypt,
-	cancel
+	decrypt,
+	cancel,
+	done,
+	error
 };
 
 struct EncriptionDescription {

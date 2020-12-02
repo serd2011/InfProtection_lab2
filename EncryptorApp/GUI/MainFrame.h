@@ -22,12 +22,16 @@ public:
 
 	// UI Update Handlers
 	void inputFilePicker_onDropFiles(wxDropFilesEvent&);
-	void startButton_onClick(wxCommandEvent& event);
+	void encryptButton_onClick(wxCommandEvent& event);
+	void decryptButton_onClick(wxCommandEvent& event);
 	void cancelButton_onClick(wxCommandEvent& event);
-
+	void ui_onChange(wxCommandEvent& event);
+		
 	// Frame Update Handlers
 	void setState(States state);
 	void updateProgress(unsigned int progress);
+
+	void startButtonsClicked(States action);
 
 private:
 	wxStaticText* inputFileStaticText;
@@ -37,7 +41,11 @@ private:
 	wxRadioBox* encryptionType;
 	wxStaticText* passwordInputStaticText;
 	wxTextCtrl* passwordInputField;
-	wxButton* startButton;
+	wxBoxSizer* startButtonsSizer;
+	wxButton* encryptButton;
+	wxButton* decryptButton;
 	wxButton* cancelButton;
 	StatusBar* statusBar;
+
+	States state;
 };

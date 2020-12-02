@@ -6,16 +6,16 @@ Encryptor::Encryptor::Encryptor() {
 
 Encryptor::Encryptor::~Encryptor() {}
 
-void Encryptor::Encryptor::encrypt(const std::string& inputfile, const std::string& pass, const std::string& outputfile) {
-	crypt(cryptType::encrypt, inputfile, pass, outputfile);
+void Encryptor::Encryptor::encrypt(const std::string& inputFile, const std::string& pass, const std::string& outputFile) {
+	crypt(cryptType::encrypt, inputFile, pass, outputFile);
 }
 
-void Encryptor::Encryptor::decrypt(const std::string& inputfile, const std::string& pass, const std::string& outputfile) {
-	crypt(cryptType::decrypt, inputfile, pass, outputfile);
+void Encryptor::Encryptor::decrypt(const std::string& inputFile, const std::string& pass, const std::string& outputFile) {
+	crypt(cryptType::decrypt, inputFile, pass, outputFile);
 }
 
 void Encryptor::Encryptor::changeType(ENC::IEncryptStrategy& strategy) {
-	if (this->strategy_ != nullptr && !this->strategy_->isCanceled.load()) throw EncryptorException("Encryption is in progress");
+	if (this->strategy_ != nullptr && (!this->strategy_->isCanceled.load() || !strategy.isCanceled.load())) throw EncryptorException("Encryption is in progress");
 	this->strategy_ = &strategy;
 }
 
@@ -29,31 +29,38 @@ double Encryptor::Encryptor::getProgress() {
 	return this->strategy_->progress.load() / (double)this->strategy_->total.load();
 }
 
-void Encryptor::Encryptor::crypt(cryptType type, const std::string& inputfile, const std::string& pass, const std::string& outputfile) {
+void Encryptor::Encryptor::crypt(cryptType type, const std::string& inputFile, const std::string& pass, const std::string& outputFile) {
 	if (this->strategy_ == nullptr)	throw EncryptorException("Encryption type is not set");
 
 	this->strategy_->isCanceled = false;
 
-	std::string outputFileName = outputfile == "" ? inputfile + ".enc" : outputfile;
-	std::ifstream inputFileStream(inputfile, std::ios::binary);
-	std::ofstream outputFileStream(outputFileName, std::ios::binary | std::ios::trunc);
+	std::ifstream inputFileStream(inputFile, std::ios::binary);
+	std::ofstream outputFileStream(outputFile, std::ios::binary | std::ios::trunc);
 	if (!inputFileStream.is_open() || !outputFileStream.is_open()) {
 		this->strategy_->isCanceled = true;
 		throw EncryptorException("Can't open file");
 	}
 
-	if (type == cryptType::encrypt) {
-		this->strategy_->encrypt(inputFileStream, outputFileStream, pass);
+	try {
+		if (type == cryptType::encrypt) {
+			this->strategy_->encrypt(inputFileStream, outputFileStream, pass);
+		}
+		else {
+			this->strategy_->decrypt(inputFileStream, outputFileStream, pass);
+		}
 	}
-	else {
-		this->strategy_->decrypt(inputFileStream, outputFileStream, pass);
+	catch (...) {
+		inputFileStream.close();
+		outputFileStream.close();
+		std::remove(outputFile.c_str());
+		throw;
 	}
 
 	inputFileStream.close();
 	outputFileStream.close();
 
 	if (this->strategy_->isCanceled.load())
-		std::remove(outputFileName.c_str());
+		std::remove(outputFile.c_str());
 
 	this->strategy_->isCanceled = true;
 }

@@ -24,7 +24,7 @@ void ENC::EncryptCaesar::encrypt(std::istream& inputStream, std::ostream& output
 			this->progress++;
 		}
 
-		outputStream.write(buffer, ENC_BUFFER_SIZE);
+		outputStream.write(buffer, inputStream.gcount());
 	}
 }
 

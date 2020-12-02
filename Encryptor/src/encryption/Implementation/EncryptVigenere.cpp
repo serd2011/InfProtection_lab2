@@ -29,7 +29,7 @@ void ENC::EncryptVigenere::encrypt(std::istream& inputStream, std::ostream& outp
 			if (iteratorPass == endPass) iteratorPass = beginPass;
 		}
 
-		outputStream.write(buffer, ENC_BUFFER_SIZE);
+		outputStream.write(buffer, inputStream.gcount());
 	}
 
 }

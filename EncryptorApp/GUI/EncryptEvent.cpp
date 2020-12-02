@@ -25,6 +25,10 @@ size_t StartEncryptEvent::getType() const {
 	return this->type_;
 }
 
+StartEncryptEvent::Actions StartEncryptEvent::getAction() const{
+	return this->action_;
+}
+
 wxEvent* CancelEncryptEvent::Clone() const {
 	return new CancelEncryptEvent(*this);
 }

@@ -45,7 +45,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	this->inputFileStaticText = new wxStaticText(this, wxID_ANY, MESSAGE_INPUT_FILE_TITLE, wxDefaultPosition, wxDefaultSize, 0);
 	FilePickersSizer->Add(inputFileStaticText, 0, wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxRIGHT, 5);
 
-	this->inputFilePicker = new wxFilePickerCtrl(this, wxID_ANY, wxEmptyString, MESSAGE_CHOOSE_FILE_MESSAGE, L"*.*", wxDefaultPosition, wxDefaultSize, wxFLP_OPEN | wxFLP_SMALL | wxFLP_USE_TEXTCTRL | wxFLP_CHANGE_DIR | wxFLP_FILE_MUST_EXIST);
+	this->inputFilePicker = new wxFilePickerCtrl(this, wxID_ANY, wxEmptyString, MESSAGE_CHOOSE_FILE_MESSAGE, L"*.*", wxDefaultPosition, wxDefaultSize, wxFLP_OPEN | wxFLP_SMALL | wxFLP_USE_TEXTCTRL | wxFLP_FILE_MUST_EXIST);
 	this->inputFilePicker->SetMinSize(wxSize(300, -1));
 	this->inputFilePicker->DragAcceptFiles(true);
 	FilePickersSizer->Add(this->inputFilePicker, 0, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxLEFT, 5);
@@ -53,7 +53,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	this->outputFileStaticText = new wxStaticText(this, wxID_ANY, MESSAGE_OUTPUT_FILE_TITLE, wxDefaultPosition, wxDefaultSize, 0);
 	FilePickersSizer->Add(this->outputFileStaticText, 0, wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxRIGHT, 5);
 
-	this->outputFilePicker = new wxFilePickerCtrl(this, wxID_ANY, wxEmptyString, MESSAGE_CHOOSE_FILE_MESSAGE, L"*.enc", wxDefaultPosition, wxDefaultSize, wxFLP_SAVE | wxFLP_SMALL | wxFLP_USE_TEXTCTRL | wxFLP_CHANGE_DIR | wxFLP_OVERWRITE_PROMPT);
+	this->outputFilePicker = new wxFilePickerCtrl(this, wxID_ANY, wxEmptyString, MESSAGE_CHOOSE_FILE_MESSAGE, L"*.*", wxDefaultPosition, wxDefaultSize, wxFLP_SAVE | wxFLP_SMALL | wxFLP_USE_TEXTCTRL | wxFLP_OVERWRITE_PROMPT);
 	this->inputFilePicker->SetMinSize(wxSize(300, -1));
 	FilePickersSizer->Add(this->outputFilePicker, 0, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxLEFT, 5);
 
@@ -78,13 +78,17 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	this->passwordInputStaticText->Wrap(-1);
 	fgSizer2->Add(this->passwordInputStaticText, 0, wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxRIGHT, 5);
 
-	this->passwordInputField = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
+	this->passwordInputField = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD | wxTE_PROCESS_TAB);
 	fgSizer2->Add(this->passwordInputField, 0, wxALIGN_CENTER_VERTICAL | wxEXPAND | wxTOP | wxBOTTOM | wxLEFT, 5);
 
 	MainSizer->Add(fgSizer2, 0, wxEXPAND | wxBOTTOM | wxRIGHT | wxLEFT, 10);
 
-	this->startButton = new wxButton(this, wxID_ANY, MESSAGE_ENCRYPT_BUTTON_TITLE, wxDefaultPosition, wxSize(-1, 36), 0);
-	MainSizer->Add(this->startButton, 0, wxEXPAND | wxBOTTOM | wxRIGHT | wxLEFT, 10);
+	this->startButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+	this->encryptButton = new wxButton(this, wxID_ANY, MESSAGE_ENCRYPT_BUTTON_TITLE, wxDefaultPosition, wxSize(-1, 36), 0);
+	this->startButtonsSizer->Add(this->encryptButton, 1, wxRIGHT, 5);
+	this->decryptButton = new wxButton(this, wxID_ANY, MESSAGE_DECRYPT_BUTTON_TITLE, wxDefaultPosition, wxSize(-1, 36), 0);
+	this->startButtonsSizer->Add(this->decryptButton, 1, wxLEFT, 5);
+	MainSizer->Add(this->startButtonsSizer, 0, wxEXPAND | wxBOTTOM | wxRIGHT | wxLEFT, 10);
 
 	this->cancelButton = new wxButton(this, wxID_ANY, MESSAGE_CANCEL_BUTTON_TITLE, wxDefaultPosition, wxSize(-1, 36), 0);
 	MainSizer->Add(this->cancelButton, 0, wxEXPAND | wxBOTTOM | wxRIGHT | wxLEFT, 10);
@@ -101,8 +105,16 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 
 	// Connect Events
 	this->inputFilePicker->Bind(wxEVT_DROP_FILES, &MainFrame::inputFilePicker_onDropFiles, this);
-	this->startButton->Bind(wxEVT_BUTTON, &MainFrame::startButton_onClick, this);
+	this->encryptButton->Bind(wxEVT_BUTTON, &MainFrame::encryptButton_onClick, this);
+	this->decryptButton->Bind(wxEVT_BUTTON, &MainFrame::decryptButton_onClick, this);
 	this->cancelButton->Bind(wxEVT_BUTTON, &MainFrame::cancelButton_onClick, this);
+	//UI on Change
+	this->inputFilePicker->Bind(wxEVT_FILEPICKER_CHANGED, &MainFrame::ui_onChange, this);
+	this->outputFilePicker->Bind(wxEVT_FILEPICKER_CHANGED, &MainFrame::ui_onChange, this);
+	this->encryptionType->Bind(wxEVT_RADIOBOX, &MainFrame::ui_onChange, this);
+	this->passwordInputField->Bind(wxEVT_TEXT, &MainFrame::ui_onChange, this);
+	this->encryptButton->Bind(wxEVT_BUTTON, &MainFrame::ui_onChange, this);
+	this->cancelButton->Bind(wxEVT_BUTTON, &MainFrame::ui_onChange, this);
 
 	this->setState(States::standBy);
 }
@@ -138,24 +150,42 @@ void MainFrame::inputFilePicker_onDropFiles(wxDropFilesEvent& event) {
 	event.Skip();
 }
 
-void MainFrame::startButton_onClick(wxCommandEvent& event) {
+void MainFrame::encryptButton_onClick(wxCommandEvent& event) {
+	this->startButtonsClicked(States::encrypt);
+	event.Skip();
+}
+
+void MainFrame::decryptButton_onClick(wxCommandEvent& event) {
+	this->startButtonsClicked(States::decrypt);
+	event.Skip();
+}
+
+
+void MainFrame::cancelButton_onClick(wxCommandEvent& event) {
+	wxPostEvent(this, CancelEncryptEvent());
+	event.Skip();
+}
+
+void MainFrame::ui_onChange(wxCommandEvent& event) {
+	if (this->state == States::done) this->setState(States::standBy);
+	event.Skip();
+}
+
+void MainFrame::startButtonsClicked(States action) {
 	std::string inputFile = this->inputFilePicker->GetPath();
 	std::string outputFile = this->outputFilePicker->GetPath();
 	std::string pass = this->passwordInputField->GetLineText(0);
 	size_t type = this->encryptionType->GetSelection();
-	StartEncryptEvent encryptEvent(inputFile, outputFile, pass, type);
+	auto eventAction = (action == States::encrypt ? StartEncryptEvent::Actions::encrypt : StartEncryptEvent::Actions::decrypt);
+	StartEncryptEvent encryptEvent(eventAction, inputFile, outputFile, pass, type);
 	wxPostEvent(this, encryptEvent);
-}
-
-void MainFrame::cancelButton_onClick(wxCommandEvent& event) {
-	wxPostEvent(this, CancelEncryptEvent());
 }
 
 void MainFrame::setState(States state) {
 	switch (state) {
 	case States::standBy:
 		this->cancelButton->Hide();
-		this->startButton->Show();
+		this->startButtonsSizer->ShowItems(true);
 		this->inputFilePicker->Enable(true);
 		this->outputFilePicker->Enable(true);
 		this->encryptionType->Enable(true);
@@ -166,20 +196,29 @@ void MainFrame::setState(States state) {
 		break;
 	case States::encrypt:
 		this->cancelButton->Show();
-		this->startButton->Hide();
+		this->startButtonsSizer->ShowItems(false);
 		this->inputFilePicker->Enable(false);
 		this->outputFilePicker->Enable(false);
 		this->encryptionType->Enable(false);
 		this->passwordInputField->Enable(false);
 		this->cancelButton->Enable(true);
-		this->statusBar->setStatus(MESSAGE_ENCRIPTION_IN_PROGRESSS_TATUS);
+		this->statusBar->setStatus(MESSAGE_ENCRIPTION_IN_PROGRESSS_STATUS);
 		this->statusBar->showProgress(100);
 		break;
 	case States::cancel:
 		this->cancelButton->Enable(false);
 		this->statusBar->setStatus(MESSAGE_CANCELING_STATUS);
 		break;
+	case States::done:
+		this->setState(States::standBy);
+		this->statusBar->setStatus(MESSAGE_DONE_STATUS);
+		break;
+	case States::error:
+		this->setState(States::standBy);
+		this->statusBar->setStatus(MESSAGE_ERROR_STATUS);
+		break;
 	}
+	this->state = state;
 	this->Layout();
 }
 

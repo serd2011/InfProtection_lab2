@@ -1,8 +1,11 @@
 #include "pch.h"
 
 #include "App.h"
+#include <wx/filefn.h> 
 
 #include "messages.h"
+
+static std::map<Utils::EncryptTypes, unsigned int> minPasswordLenght{ {Utils::EncryptTypes::Caesar,1},{Utils::EncryptTypes::Vigenere,1},{Utils::EncryptTypes::Enigma,9} };
 
 App::~App() {
 	delete this->timer;
@@ -38,16 +41,32 @@ bool App::OnExceptionInMainLoop() {
 
 void App::OnEncryptStart(StartEncryptEvent& event) {
 	if (this->state != States::standBy) return;
-	this->state = States::encrypt;
-	this->mainFrame->setState(States::encrypt);
 
 	Utils::EncryptTypes type = EncriptionDescriptions[event.getType()].type;
 	std::string& inputFile = event.getInputFile();
 	std::string& outputFile = event.getOutputFile();
 	std::string& pass = event.getPass();
+	auto action = event.getAction();
 	this->encryptor.changeType(this->encryptions.getEncryption(type));
+	auto function = (action == StartEncryptEvent::Actions::encrypt ? &Encryptor::Encryptor::encrypt : &Encryptor::Encryptor::decrypt);
 
-	this->future_ = std::async(std::launch::async, &Encryptor::Encryptor::encrypt, this->encryptor, inputFile, pass, outputFile);
+	//Validation
+
+	if (!wxFileExists(inputFile)) {
+		wxMessageBox(MESSAGE_INPUT_FILE_DOESNT_EXIST_MESSAGE, MESSAGE_INPUT_VALIDATION_ERROR_TITLE, wxICON_INFORMATION);
+		return;
+	}
+
+	if (pass.length() < minPasswordLenght[type]) {
+		wxMessageBox(MESSAGE_PASS_TOO_SHORT + std::to_wstring(minPasswordLenght[type]), MESSAGE_INPUT_VALIDATION_ERROR_TITLE, wxICON_INFORMATION);
+		return;
+	}
+
+	// Encryption start
+	this->state = States::encrypt;
+	this->mainFrame->setState(action == StartEncryptEvent::Actions::encrypt ? States::encrypt : States::decrypt);
+
+	this->future_ = std::async(std::launch::async, function, this->encryptor, inputFile, pass, outputFile);
 
 	this->timer->Start(10);
 }
@@ -71,10 +90,17 @@ void App::OnTimer(wxTimerEvent&) {
 			this->future_.get();
 		}
 		catch (...) {
+			this->mainFrame->setState(States::error);
+			this->state = States::cancel;
 			wxMessageBox(MESSAGE_ENCRYPTOR_EXCEPTION_MESSAGE, MESSAGE_ENCRYPTOR_EXCEPTION_TITLE, wxICON_ERROR);
 		}
+		if (this->state == States::cancel) {
+			this->mainFrame->setState(States::standBy);
+		}
+		else {
+			this->mainFrame->setState(States::done);
+		}
 		this->state = States::standBy;
-		this->mainFrame->setState(States::standBy);
 	}
 	else {
 		this->mainFrame->updateProgress(progress);

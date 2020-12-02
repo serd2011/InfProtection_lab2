@@ -14,8 +14,8 @@ namespace Encryptor {
 		Encryptor();
 		~Encryptor();
 
-		void encrypt(const std::string& inputfile, const std::string& pass, const std::string& outputfile = "");
-		void decrypt(const std::string& inputfile, const std::string& pass, const std::string& outputfile = "");
+		void encrypt(const std::string& inputFile, const std::string& pass, const std::string& outputFile);
+		void decrypt(const std::string& inputFile, const std::string& pass, const std::string& outputFile);
 
 		void changeType(ENC::IEncryptStrategy& strategy);
 
@@ -32,7 +32,7 @@ namespace Encryptor {
 			decrypt
 		};
 
-		void crypt(cryptType type, const std::string& inputfile, const std::string& pass, const std::string& outputfile);
+		void crypt(cryptType type, const std::string& inputFile, const std::string& pass, const std::string& outputFile);
 
 	};
 
