@@ -5,20 +5,20 @@ void ENC::EncryptVigenere::encrypt(std::istream& inputStream, std::ostream& outp
 
 	this->progress = 0;
 
-	const char* beginPass = pass.c_str();
-	const char* endPass = beginPass + pass.size();
-	const char* iteratorPass = beginPass;
-
 	inputStream.seekg(0, inputStream.end);
 	this->total = inputStream.tellg();
 	inputStream.seekg(0, inputStream.beg);
 
-	char buffer[ENC_BUFFER_SIZE]{};
-	char* bufferIterator;
-	char* bufferEndPtr = buffer + ENC_BUFFER_SIZE;
+	const unsigned char* beginPass = reinterpret_cast<const unsigned char*>(pass.c_str());
+	const unsigned char* endPass = beginPass + pass.size();
+	const unsigned char* iteratorPass = beginPass;
+
+	unsigned char buffer[ENC_BUFFER_SIZE]{};
+	unsigned char* bufferIterator;
+	unsigned char* bufferEndPtr = buffer + ENC_BUFFER_SIZE;
 
 	while (!inputStream.eof() && !this->isCanceled.load()) {
-		inputStream.read(buffer, ENC_BUFFER_SIZE);
+		inputStream.read(reinterpret_cast<char*>(buffer), ENC_BUFFER_SIZE);
 
 		bufferIterator = buffer;
 		while (bufferIterator != bufferEndPtr) {
@@ -29,7 +29,7 @@ void ENC::EncryptVigenere::encrypt(std::istream& inputStream, std::ostream& outp
 			if (iteratorPass == endPass) iteratorPass = beginPass;
 		}
 
-		outputStream.write(buffer, inputStream.gcount());
+		outputStream.write(reinterpret_cast<char*>(buffer), inputStream.gcount());
 	}
 
 }

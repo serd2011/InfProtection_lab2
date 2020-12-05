@@ -121,11 +121,11 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 
 // event handlers
 
-void MainFrame::onQuit(wxCommandEvent& WXUNUSED(event)) {
+void MainFrame::onQuit(wxCommandEvent&) {
 	Close(true);
 }
 
-void MainFrame::onAbout(wxCommandEvent& WXUNUSED(event)) {
+void MainFrame::onAbout(wxCommandEvent&) {
 	wxMessageBox(
 		MESSAGE_ABOUT_MESSAGE,
 		MESSAGE_ABOUT_TITLE,
@@ -204,6 +204,10 @@ void MainFrame::setState(States state) {
 		this->cancelButton->Enable(true);
 		this->statusBar->setStatus(MESSAGE_ENCRIPTION_IN_PROGRESSS_STATUS);
 		this->statusBar->showProgress(100);
+		break;
+	case States::decrypt:
+		this->setState(States::encrypt);
+		this->statusBar->setStatus(MESSAGE_DECRIPTION_IN_PROGRESSS_STATUS);
 		break;
 	case States::cancel:
 		this->cancelButton->Enable(false);
