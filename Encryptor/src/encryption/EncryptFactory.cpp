@@ -3,6 +3,7 @@
 #include "encryption/Implementation/EncryptCaesar.h"
 #include "encryption/Implementation/EncryptVigenere.h"
 #include "encryption/Implementation/EncryptEnigma.h"
+#include "encryption/Implementation/EncryptExtra.h"
 
 ENC::IEncryptStrategy* ENC::EncryptFactory::getEncrypt(EncryptTypes type) {
 
@@ -18,6 +19,10 @@ ENC::IEncryptStrategy* ENC::EncryptFactory::getEncrypt(EncryptTypes type) {
 
 	case ENC::EncryptTypes::Enigma:
 		return new EncryptEnigma();
+		break;
+
+	case ENC::EncryptTypes::Extra:
+		return new EncryptExtra();
 		break;
 
 	default:

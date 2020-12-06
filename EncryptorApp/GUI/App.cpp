@@ -5,7 +5,7 @@
 
 #include "messages.h"
 
-static std::map<Utils::EncryptTypes, unsigned int> minPasswordLenght{ {Utils::EncryptTypes::Caesar,1},{Utils::EncryptTypes::Vigenere,1},{Utils::EncryptTypes::Enigma,5} };
+static std::map<Utils::EncryptTypes, unsigned int> minPasswordLenght{ {Utils::EncryptTypes::Caesar,1},{Utils::EncryptTypes::Vigenere,1},{Utils::EncryptTypes::Enigma,5},{Utils::EncryptTypes::Extra,2} };
 
 App::~App() {
 	delete this->timer;

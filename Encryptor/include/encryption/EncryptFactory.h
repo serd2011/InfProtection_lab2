@@ -7,7 +7,8 @@ namespace ENC {
 	enum class EncryptTypes {
 		Caesar,
 		Vigenere,
-		Enigma
+		Enigma,
+		Extra
 	};
 
 	class EncryptFactory {
