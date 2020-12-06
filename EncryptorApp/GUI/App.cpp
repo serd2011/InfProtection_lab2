@@ -7,10 +7,6 @@
 
 static std::map<Utils::EncryptTypes, unsigned int> minPasswordLenght{ {Utils::EncryptTypes::Caesar,1},{Utils::EncryptTypes::Vigenere,1},{Utils::EncryptTypes::Enigma,5},{Utils::EncryptTypes::Extra,2} };
 
-App::~App() {
-	delete this->timer;
-}
-
 bool App::OnInit() {
 	if (!wxApp::OnInit()) return false;
 
@@ -27,7 +23,10 @@ bool App::OnInit() {
 }
 
 int App::OnExit() {
-	if (this->state == States::encrypt)	wxPostEvent(this, CancelEncryptEvent());
+	this->timer->Stop();
+	delete this->timer;
+	this->encryptor.cancel();
+	if (this->future_.valid()) this->future_.get();
 	return 0;
 }
 
@@ -86,6 +85,11 @@ void App::OnTimer(wxTimerEvent&) {
 	int progress = (int)(this->encryptor.getProgress() * 100.0);
 	if (progress < 0) {
 		this->timer->Stop();
+		if (!this->future_.valid()) {
+			this->mainFrame->setState(States::error);
+			this->state = States::cancel;
+			return;
+		}
 		try {
 			this->future_.get();
 		}

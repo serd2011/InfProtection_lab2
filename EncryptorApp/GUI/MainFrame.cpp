@@ -116,6 +116,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	this->encryptButton->Bind(wxEVT_BUTTON, &MainFrame::ui_onChange, this);
 	this->cancelButton->Bind(wxEVT_BUTTON, &MainFrame::ui_onChange, this);
 
+	this->Bind(wxEVT_CLOSE_WINDOW, &MainFrame::OnClose, this);
+
 	this->setState(States::standBy);
 }
 
@@ -132,6 +134,15 @@ void MainFrame::onAbout(wxCommandEvent&) {
 		wxOK | wxICON_INFORMATION,
 		this
 	);
+}
+
+void MainFrame::OnClose(wxCloseEvent& event) {
+	if (isWorkingState(this->state) && event.CanVeto()) {
+		wxMessageBox(MESSAGE_ENCRYPTION_IN_PROGRESS_MESSAGE, MESSAGE_ENCRYPTION_IN_PROGRESS_TITLE, wxICON_EXCLAMATION | wxOK, this);
+		event.Veto();
+		return;
+	}
+	event.Skip();
 }
 
 void MainFrame::inputFilePicker_onDropFiles(wxDropFilesEvent& event) {

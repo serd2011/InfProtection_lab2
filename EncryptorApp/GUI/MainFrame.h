@@ -16,6 +16,8 @@ public:
 		long style = wxCAPTION | wxCLOSE_BOX | wxMINIMIZE_BOX | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCLIP_CHILDREN
 	);
 
+	void OnClose(wxCloseEvent&);
+
 	// Menu Commands
 	void onQuit(wxCommandEvent&);
 	void onAbout(wxCommandEvent&);

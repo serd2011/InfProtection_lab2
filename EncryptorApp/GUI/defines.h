@@ -13,6 +13,8 @@ enum class States {
 	error
 };
 
+#define isWorkingState(state) (state == States::encrypt || state == States::decrypt || state == States::cancel)
+
 struct EncriptionDescription {
 	std::wstring name;
 	Utils::EncryptTypes type;

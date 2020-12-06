@@ -38,4 +38,5 @@
 #define MESSAGE_DONE_STATUS L"Готово"
 #define MESSAGE_ERROR_STATUS L"ОШИБКА!"
 
-
+#define MESSAGE_ENCRYPTION_IN_PROGRESS_TITLE L"Внимание!"
+#define MESSAGE_ENCRYPTION_IN_PROGRESS_MESSAGE L"Выполняется операция.\nДождитесь завершения или отмените ее."

@@ -20,6 +20,7 @@ void Encryptor::Encryptor::changeType(ENC::IEncryptStrategy& strategy) {
 }
 
 void Encryptor::Encryptor::cancel() {
+	if (this->strategy_ == nullptr) return;
 	this->strategy_->isCanceled = true;
 }
 

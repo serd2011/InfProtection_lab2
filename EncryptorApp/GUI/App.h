@@ -13,9 +13,6 @@
 class App : public wxApp {
 
 public:
-
-	~App();
-
 	virtual bool OnInit() override;
 	virtual int OnExit() override;
 
