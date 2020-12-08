@@ -32,7 +32,7 @@ StatusBar::~StatusBar() {
 #endif
 }
 
-void StatusBar::clearStatus() {	
+void StatusBar::clearStatus() {
 	this->statusStaticText->SetLabel("");
 }
 
@@ -60,6 +60,7 @@ void StatusBar::showProgress(unsigned int range) {
 }
 
 void StatusBar::setProgress(unsigned int value) {
+	if (value < (unsigned int)this->progressBar->GetRange()) this->progressBar->SetValue(value + 1);
 	this->progressBar->SetValue(value);
 
 #ifdef __APP_PROGRESS_AVAILABLE__ 
