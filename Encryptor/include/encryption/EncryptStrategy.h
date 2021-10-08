@@ -6,6 +6,7 @@
 #include "defs.h"
 
 #include "EncryptorException.h"
+#include "ExceptionMessages.h"
 
 namespace Encryptor {
 	class Encryptor;

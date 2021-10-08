@@ -4,8 +4,11 @@
 #include <wx/filefn.h> 
 
 #include "messages.h"
+#include "Utils/functions.h"
 
-static std::map<Utils::EncryptTypes, unsigned int> minPasswordLenght{ {Utils::EncryptTypes::Caesar,1},{Utils::EncryptTypes::Vigenere,1},{Utils::EncryptTypes::Enigma,5},{Utils::EncryptTypes::Extra,2} };
+#include "EncryptorException.h"
+
+static std::map<Utils::EncryptTypes, unsigned int> minPasswordLenght{ {Utils::EncryptTypes::Caesar,1},{Utils::EncryptTypes::Vigenere,1},{Utils::EncryptTypes::Enigma,5},{Utils::EncryptTypes::Extra,2},{Utils::EncryptTypes::Hill,16} };
 
 bool App::OnInit() {
 	if (!wxApp::OnInit()) return false;
@@ -31,8 +34,9 @@ int App::OnExit() {
 }
 
 bool App::OnExceptionInMainLoop() {
-	try { throw; }
-	catch (...) {
+	try {
+		throw;
+	} catch (...) {
 		wxMessageBox(MESSAGE_UNHANDLED_EXCEPTION_MESSAGE, MESSAGE_UNHANDLED_EXCEPTION_TITLE, wxICON_ERROR);
 	}
 	return false;
@@ -92,21 +96,22 @@ void App::OnTimer(wxTimerEvent&) {
 		}
 		try {
 			this->future_.get();
-		}
-		catch (...) {
+		} catch (const Encryptor::EncryptorException& e) {
+			this->mainFrame->setState(States::error);
+			this->state = States::cancel;
+			wxMessageBox(Utils::getLocalizedMessage(e.getId()), MESSAGE_ENCRYPTOR_EXCEPTION_TITLE, wxICON_ERROR);
+		} catch (...) {
 			this->mainFrame->setState(States::error);
 			this->state = States::cancel;
 			wxMessageBox(MESSAGE_ENCRYPTOR_EXCEPTION_MESSAGE, MESSAGE_ENCRYPTOR_EXCEPTION_TITLE, wxICON_ERROR);
 		}
 		if (this->state == States::cancel) {
 			this->mainFrame->setState(States::standBy);
-		}
-		else {
+		} else {
 			this->mainFrame->setState(States::done);
 		}
 		this->state = States::standBy;
-	}
-	else {
+	} else {
 		this->mainFrame->updateProgress(progress);
 	}
 }

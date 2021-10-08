@@ -1,4 +1,4 @@
-workspace "Kursach"
+workspace "Lab2"
     configurations { 
         "Debug",
         "Release"

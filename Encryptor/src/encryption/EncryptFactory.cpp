@@ -4,6 +4,7 @@
 #include "encryption/Implementation/EncryptVigenere.h"
 #include "encryption/Implementation/EncryptEnigma.h"
 #include "encryption/Implementation/EncryptExtra.h"
+#include "encryption/Implementation/EncryptHill.h"
 
 ENC::IEncryptStrategy* ENC::EncryptFactory::getEncrypt(EncryptTypes type) {
 
@@ -24,6 +25,8 @@ ENC::IEncryptStrategy* ENC::EncryptFactory::getEncrypt(EncryptTypes type) {
 	case ENC::EncryptTypes::Extra:
 		return new EncryptExtra();
 		break;
+	case ENC::EncryptTypes::Hill:
+		return new EncryptHill();
 
 	default:
 		throw std::runtime_error("Invalid Encrypt Strategy Type");

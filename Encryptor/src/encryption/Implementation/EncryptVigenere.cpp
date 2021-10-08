@@ -1,7 +1,7 @@
 #include "encryption/Implementation/EncryptVigenere.h"
 
 void ENC::EncryptVigenere::encrypt(std::istream& inputStream, std::ostream& outputStream, const std::string& pass) {
-	if (pass == "")	throw Encryptor::EncryptorException("Password can't be empty");
+	if (pass == "")	throw Encryptor::EncryptorException(PASSWORD_IS_TOO_SHORT);
 
 	this->progress = 0;
 

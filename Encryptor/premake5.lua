@@ -12,6 +12,7 @@ project "Encryptor"
     
     includedirs{
         "include",
+        "src"
     }
 
     filter "configurations:Debug"

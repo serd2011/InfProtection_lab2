@@ -24,5 +24,5 @@ std::array<const EncriptionDescription, 4> const EncriptionDescriptions{ {
 	{L"Цезарь", Utils::EncryptTypes::Caesar},
 	{L"Виженер", Utils::EncryptTypes::Vigenere},
 	{L"Энигма", Utils::EncryptTypes::Enigma},
-	{L"Доп.", Utils::EncryptTypes::Extra}
+	{L"Шифр Хилла", Utils::EncryptTypes::Hill }
 } };

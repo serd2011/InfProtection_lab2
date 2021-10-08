@@ -8,7 +8,8 @@ namespace ENC {
 		Caesar,
 		Vigenere,
 		Enigma,
-		Extra
+		Extra,
+		Hill
 	};
 
 	class EncryptFactory {

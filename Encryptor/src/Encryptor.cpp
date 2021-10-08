@@ -51,6 +51,7 @@ void Encryptor::Encryptor::crypt(cryptType type, const std::string& inputFile, c
 		}
 	}
 	catch (...) {
+		this->strategy_->isCanceled = true;
 		inputFileStream.close();
 		outputFileStream.close();
 		std::remove(outputFile.c_str());

@@ -1,7 +1,7 @@
 #include "encryption/Implementation/EncryptCaesar.h"
 
 void ENC::EncryptCaesar::encrypt(std::istream& inputStream, std::ostream& outputStream, const std::string& pass) {
-	if (pass == "")	throw Encryptor::EncryptorException("Password can't be empty");
+	if (pass == "")	throw Encryptor::EncryptorException(PASSWORD_CANT_BE_EMPTY);
 
 	this->progress = 0;
 
