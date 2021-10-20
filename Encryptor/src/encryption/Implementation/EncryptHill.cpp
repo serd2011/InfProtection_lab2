@@ -26,8 +26,10 @@ void ENC::EncryptHill::encrypt(std::istream& inputStream, std::ostream& outputSt
 	this->progress = 0;
 
 	inputStream.seekg(0, inputStream.end);
-	this->total = inputStream.tellg();
+	uint64_t size = inputStream.tellg();
 	inputStream.seekg(0, inputStream.beg);
+	outputStream.write(reinterpret_cast<char*>(&size), sizeof(size));
+	this->total = size;
 
 	unsigned char buffer[ENC_BUFFER_SIZE];
 	unsigned char* bufferIterator;
@@ -53,7 +55,7 @@ void ENC::EncryptHill::encrypt(std::istream& inputStream, std::ostream& outputSt
 			this->progress += 4;
 		}
 
-		outputStream.write(reinterpret_cast<char*>(buffer), inputStream.gcount());
+		outputStream.write(reinterpret_cast<char*>(buffer), static_cast<std::streamsize>(std::ceil((inputStream.gcount() / 4.0))) * 4);
 	}
 
 }
@@ -74,16 +76,16 @@ void ENC::EncryptHill::decrypt(std::istream& inputStream, std::ostream& outputSt
 
 	this->progress = 0;
 
-	inputStream.seekg(0, inputStream.end);
-	this->total = inputStream.tellg();
-	inputStream.seekg(0, inputStream.beg);
+	uint64_t size;
+	inputStream.read(reinterpret_cast<char*>(&size), sizeof(size));
+	this->total = size;
 
 	unsigned char buffer[ENC_BUFFER_SIZE];
 	unsigned char* bufferIterator;
 	unsigned char* bufferEndPtr = buffer + ENC_BUFFER_SIZE;
 
 	int x, y;
-	int g = gcdex(det, ALPHABET_SIZE, x, y);
+	gcdex(det, ALPHABET_SIZE, x, y);
 	x = (x % ALPHABET_SIZE + ALPHABET_SIZE) % ALPHABET_SIZE;
 	ML::mat4<unsigned char> decryptKey = ML::adj(key) * x;
 	ML::vec4<unsigned char> vec;
@@ -105,7 +107,8 @@ void ENC::EncryptHill::decrypt(std::istream& inputStream, std::ostream& outputSt
 			this->progress += 4;
 		}
 
-		outputStream.write(reinterpret_cast<char*>(buffer), inputStream.gcount());
+		outputStream.write(reinterpret_cast<char*>(buffer), std::min(static_cast<uint64_t>(ENC_BUFFER_SIZE), size));
+		size -= ENC_BUFFER_SIZE;
 	}
 }
 
